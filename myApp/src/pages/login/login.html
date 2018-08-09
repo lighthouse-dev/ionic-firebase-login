@@ -1,18 +1,37 @@
-<!--
-  Generated template for the LoginPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>Login</ion-title>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title> Login </ion-title>
   </ion-navbar>
-
 </ion-header>
 
-
 <ion-content padding>
+  <h1 *ngIf="authService.user | async" text-center> {{ (authService.user | async)?.email }} </h1>
 
+  <ion-list *ngIf="!(authService.user | async)">
+    <ion-item>
+      <ion-label floating> Email </ion-label>
+      <ion-input type="email" [(ngModel)]="user.email"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating> Password </ion-label>
+      <ion-input type="password" [(ngModel)]="user.password"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <div padding>
+    <button
+      ion-button color="primary" block round
+      (click)="login(user)"
+      *ngIf="!(authService.user | async)"
+      [disabled]="!user.email || !user.password" > Login </button>
+
+    <button
+      ion-button color="light" block round
+      (click)="logout()"
+      *ngIf="authService.user | async"> Logout </button>
+  </div>
 </ion-content>
