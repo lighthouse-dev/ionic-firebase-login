@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController } from 'ionic-angular';
+import { IonicPage, NavController, ToastController } from 'ionic-angular';
+import { AngularFireAuth } from 'angularfire2/auth';
 
-import { AuthService } from '../../app/auth/auth.service';
+import { HomePage } from '../home/home';
 import { User } from '../../model/user';
 
 /**
@@ -21,16 +22,45 @@ export class LoginPage {
 
   constructor(
     public navCtrl: NavController,
-    public authService: AuthService
+    private afAuth: AngularFireAuth,
+    private toast: ToastController
   ) {
 
   }
 
   // Login
-  async login(user: User) { }
+  async login(user: User) {
+    this.afAuth.auth.signInAndRetrieveDataWithEmailAndPassword(user.email, user.password)
+      .catch(err => { // Login failed.
+        this.toast.create({
+          message: ` Login Id and Password do not match.`,
+          duration: 3000
+        }).present();
+      });
 
-  // Logout
-  logout() { }
+    // Login succeed.
+    this.afAuth.authState.subscribe(data => {
+      if (data && data.email && data.uid) {
+        // Go to HomePage.
+        this.navCtrl.setRoot(HomePage);
+
+        // When the login is successful, display the message.
+        this.afAuth.authState.subscribe(data => {
+          if (data && data.email && data.uid) {
+            this.toast.create({
+              message: `Welcome to APP_NAME, ${data.email}`,
+              duration: 3000
+            }).present();
+          } else {
+            this.toast.create({
+              message: `Could not find authentication details.`,
+              duration: 3000
+            }).present();
+          }
+        });
+      }
+    });
+  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
