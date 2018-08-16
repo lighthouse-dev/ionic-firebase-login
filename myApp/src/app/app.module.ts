@@ -2,9 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
-// Service
-import { AuthService } from './auth/auth.service';
-
 // angularfire2
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -45,7 +42,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
-    AuthService,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
