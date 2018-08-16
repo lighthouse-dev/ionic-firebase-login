@@ -31,35 +31,31 @@ export class LoginPage {
   // Login
   async login(user: User) {
     this.afAuth.auth.signInAndRetrieveDataWithEmailAndPassword(user.email, user.password)
-      .catch(err => { // Login failed.
+      .then(res => {
+        // Login succeed.
+        if (res.user.email && res.user.uid) {
+          // Go to HomePage.
+          this.navCtrl.setRoot(HomePage);
+
+          // display the success message.
+          this.toast.create({
+            message: `Welcome to APP_NAME, ${res.user.email}`,
+            duration: 3000
+          }).present();
+        } else {
+          this.toast.create({
+            message: `Could not find authentication details.`,
+            duration: 3000
+          }).present();
+        }
+      })
+      .catch(err => {
+        // Login failed.
         this.toast.create({
-          message: ` Login Id and Password do not match.`,
+          message: `Login Id and Password do not match.`,
           duration: 3000
         }).present();
       });
-
-    // Login succeed.
-    this.afAuth.authState.subscribe(data => {
-      if (data && data.email && data.uid) {
-        // Go to HomePage.
-        this.navCtrl.setRoot(HomePage);
-
-        // When the login is successful, display the message.
-        this.afAuth.authState.subscribe(data => {
-          if (data && data.email && data.uid) {
-            this.toast.create({
-              message: `Welcome to APP_NAME, ${data.email}`,
-              duration: 3000
-            }).present();
-          } else {
-            this.toast.create({
-              message: `Could not find authentication details.`,
-              duration: 3000
-            }).present();
-          }
-        });
-      }
-    });
   }
 
   ionViewDidLoad() {
